@@ -1,0 +1,1 @@
+filter => 5, stride => 2, dept => 3, 128 512 1024
