@@ -13,7 +13,7 @@ class GetFeaturesTrainingInFiles :
 
     p = ""
     path = "../training_data/input/images/" + p
-    path_output = "../training_data/input/" 
+    path_output = "../training_data/input/features" + p 
     path_write_file = "training_features_data.txt" 
     
     windows_size_rows = 0
@@ -28,7 +28,7 @@ class GetFeaturesTrainingInFiles :
     def __init__(self, path):
         self.p = path
         self.path = "../training_data/input/images/" + path +"/"
-        self.path_output = "../training_data/input/" 
+        self.path_output = "../training_data/input/features/" + path + "/" 
         self.path_write_file = "training_features_data.txt" 
         
         ### kernel for prepare morphological
@@ -195,14 +195,16 @@ class GetFeaturesTrainingInFiles :
     def get_sample(self, label, features, pixel_target):
         return "|label " + label + " |coordinate " + "{:d} {:d} ".format(pixel_target[0], pixel_target[1]) + "|features " + features + "\n"
 
-    def clear_file(self, path_write_file_lable, path_write_file_features):
+    def clear_file(self, path_write_file_features):
         file_label = open(path_write_file_features, 'w')
-        file_label.write("")
-
+    
+    def shuffle_samples(self, array):
+        return random.shuffle(array)
 
     def write_samples(self, path_write_file_lable, path_write_file_features):
+        self.clear_file(path_write_file_features)
+        file = open(path_write_file_features, 'a')
         
-        file = open(self.path_output+self.path_write_file, 'a')
         self.shuffle_samples(self.samples_contour)
         self.shuffle_samples(self.samples_inner)
         self.shuffle_samples(self.samples_outer)
@@ -223,15 +225,6 @@ class GetFeaturesTrainingInFiles :
             #
             # for sample in feature_samples :
             #     file_features.write(sample)
-
-
-    # In[13]:
-
-
-    def shuffle_samples(self, array):
-        return random.shuffle(array)
-
-    # In[14]:
 
 
     def get_features_contour(self, img_rgb, pixel_target_list, windows_size_rows, windows_size_cols, label):
@@ -283,8 +276,8 @@ class GetFeaturesTrainingInFiles :
         img_rgb = self.get_image_RGB(self.path + filename_rgb)
         
         img_gray = cv2.imread(self.path + filename_gray, cv2.IMREAD_GRAYSCALE)
-        self.process_get_sample(img_rgb, img_gray, self.windows_size_rows, self.windows_size_cols, self.path + "traning_data_label_" + filename + ".txt",self.path_output + "traning_data_features_" + filename + ".txt")
-        print("finished " +self.path_output + "traning_data_features_" + filename + ".txt"+ "\n>>>>>>>>>>")
+        self.process_get_sample(img_rgb, img_gray, self.windows_size_rows, self.windows_size_cols, self.path + "traning_data_label_" + filename + ".txt",self.path_output + "training_features_data_" + filename + ".txt")
+        print("finished " +self.path_output + "training_features_data" + filename + ".txt"+ "\n>>>>>>>>>>")
 
 
     # In[19]:
@@ -312,8 +305,8 @@ class GetFeaturesTrainingInFiles :
     # In[ ]:
 
     def process(self) :
-#         if not os.path.exists(self.path_output):
-#             os.makedirs(self.path_output)
+        if not os.path.exists(self.path_output):
+            os.makedirs(self.path_output)
         filenames = []
         for (dirpath, dirnames, filename) in walk(self.path):
             filenames.extend(filename)

@@ -93,7 +93,7 @@ class SegmentationFile :
         self.path = self.directory_name + "/"
 
 
-        self.file_balance_samples = open("../training_data/input/training_features_data.txt", 'r')
+        self.file_balance_samples = open("../training_data/input/features/training_featureds_balance.txt", 'r')
 
         self.samples = []
         self.get_samples()
